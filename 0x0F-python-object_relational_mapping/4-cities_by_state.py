@@ -1,9 +1,8 @@
 #!/usr/bin/python3
-""" Select states starting with N from database """
+""" Select states with names matching arguments """
 
 
 if __name__ == '__main__':
-
     from sys import argv
     import MySQLdb
 
@@ -19,9 +18,10 @@ if __name__ == '__main__':
 
     cursor = database.cursor()
 
-    cursor.execute('SELECT id, name FROM states\
-                   ORDER BY states.id ASC')
+    cursor.execute('SELECT cities.id, cities.name, states.name FROM cities\
+                   JOIN states\
+                   ON cities.state_id = states.id\
+                   ORDER BY cities.id ASC')
 
     for row in cursor.fetchall():
-        if row[1][0] == 'N':
-            print(row)
+        print(row)

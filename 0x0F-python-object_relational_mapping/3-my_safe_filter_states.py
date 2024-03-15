@@ -1,15 +1,16 @@
 #!/usr/bin/python3
-""" Select states starting with N from database """
+""" Select states with names matching arguments """
 
+
+from sys import argv
+import MySQLdb
 
 if __name__ == '__main__':
-
-    from sys import argv
-    import MySQLdb
 
     db_user = argv[1]
     db_passwd = argv[2]
     db_name = argv[3]
+    search = '{}'.format(argv[4])
 
     database = MySQLdb.connect(host='localhost',
                                port=3306,
@@ -20,8 +21,8 @@ if __name__ == '__main__':
     cursor = database.cursor()
 
     cursor.execute('SELECT id, name FROM states\
-                   ORDER BY states.id ASC')
+                   WHERE name = %s\
+                   ORDER BY states.id ASC;', (search,))
 
     for row in cursor.fetchall():
-        if row[1][0] == 'N':
-            print(row)
+        print(row)
