@@ -1,23 +1,29 @@
 #!/usr/bin/python3
-""" List all state objects using sqlalchemy """
+"""
+This script changes the name of a State object
+from the database `hbtn_0e_6_usa`.
+"""
 
-if __name__ == '__main__':
+from sys import argv
+from model_state import State, Base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-    from sys import argv
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm.session import sessionmaker, Session
-    from model_state import Base, State
+if __name__ == "__main__":
+    """
+    Updates a State object on the database.
+    """
 
-    username = '{}'.format(argv[1])
-    password = '{}'.format(argv[2])
-    db_name = '{}'.format(argv[3])
+    db_url = "mysql+mysqldb://{}:{}@localhost:3306/{}".format(
+        argv[1], argv[2], argv[3])
 
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
-                           .format(username, password, db_name))
-
+    engine = create_engine(db_url)
     Session = sessionmaker(bind=engine)
+
     session = Session()
 
-    session.query(State).filter(State.id == 2).update({'name': 'New Mexico'})
-
+    state = session.query(State).filter(State.id == 2).first()
+    state.name = "New Mexico"
     session.commit()
+
+    session.close()
